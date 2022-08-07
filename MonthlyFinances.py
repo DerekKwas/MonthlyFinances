@@ -1,17 +1,14 @@
 # Monthly Finances
 # By Derek Kwasniewski
 
+from email import message
 import os
 from msilib.schema import ListBox
 from tkinter import *
 from tkinter import messagebox
 import PySimpleGUI as GUI
 
-entryDict = {1:2, 3:4, 5:6}
-listboxMessages = []
-
-def updateDictNames():
-    return
+entriesList = []
 
 if os.path.exists('payments.txt'):
     file = open("payments.txt", "r")
@@ -23,7 +20,7 @@ if os.path.exists('payments.txt'):
                 break   
             else:
                 list = line.split()
-
+                entriesList.append(list[0] + " " + list[1] + "\n")
 
 # Else create file if payments.txt file exists
 else:
@@ -33,13 +30,21 @@ else:
 # Create GUI object using PySimpleGui Class
 GUI.theme("DarkAmber")
 layout = [
-    [GUI.Listbox(values=listboxMessages, size=(35,22))],
+    [GUI.Listbox(key="GUIList", values=entriesList, size=(35,22))],
     [GUI.Text("Enter Payment Name"), GUI.InputText(key="entryName"), GUI.InputText(key="entryCost")],
     [GUI.Button("Ok", ), GUI.Button("Cancel")]
 ]
 
+
 # Create the window
 window = GUI.Window("Window Title", layout)
+
+def updateList(entryName, entryCost):
+    entriesList.append(entryName + " " + entryCost + "\n")
+    file = open("payments.txt", "a")
+    file.write(entryName + " " + entryCost + "\n")
+    window["GUIList"].Update(values=entriesList)  # Lookup on pysimplegui.org the "find_element" function for the Window object (was updated to use a list lookup method)
+
 # Event loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
@@ -48,21 +53,13 @@ while True:
     elif event == "Ok":
         nameText = values["entryName"]
         costText = values["entryCost"]
+
         if nameText == "":
             messagebox.showerror("Python Error", "Null Name!")
+        elif costText == "":
+            messagebox.showerror("Python Error!", "Null Cost!")
         else:
-            try:
-                name = str(nameText)
-            except:
-                messagebox.showerror("Python Error", "Not a String!")
-        if costText == "":
-            messagebox.showerror("Python Error", "Null Cost!")
-
-        else:
-            try:
-                cost = int(costText)
-            except:
-                messagebox.showerror("Python Error", "Not an Integer!")
+            updateList(nameText, costText)
 
 
 
