@@ -71,25 +71,19 @@ while True:
         nameText = values["entryName"]
         costText = values["entryCost"]
         if nameText == "":
-            print("Null Name!")
             messagebox.showerror("Python Error", "Null Name!")
         else:
             try:
                 name = str(nameText)
-                print(f"Name: {name}")
             except:
-                print("Not a String!")
                 messagebox.showerror("Python Error", "Not a String!")
         if costText == "":
-            print("Null Cost!")
             messagebox.showerror("Python Error", "Null Cost!")
 
         else:
             try:
                 cost = int(costText)
-                print(f"Cost: {cost}")
             except:
-                print("Not integer!")
                 messagebox.showerror("Python Error", "Not an Integer!")
 
 
