@@ -1,13 +1,10 @@
 # Monthly Finances
 # By Derek Kwasniewski
 
-import time
 import os
 from msilib.schema import ListBox
-from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
-import tkinter
 import PySimpleGUI as GUI
 
 entryDict = {1:2, 3:4, 5:6}
