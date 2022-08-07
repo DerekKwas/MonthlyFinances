@@ -1,2 +1,0 @@
-- cd <directory of Python project>
-- python -m PyInstaller <scriptname>.py
