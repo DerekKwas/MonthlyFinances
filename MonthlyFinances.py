@@ -33,7 +33,7 @@ entryDict = {1:2, 3:4, 5:6}
 listboxMessages = []
 
 def updateDictNames():
-    
+    return
 
 if os.path.exists('payments.txt'):
     file = open("payments.txt", "r")
@@ -51,8 +51,6 @@ if os.path.exists('payments.txt'):
 else:
     file = open("payments.txt", "w")
     file.close()
-
-updateDictNames()
 
 # Create GUI object using PySimpleGui Class
 GUI.theme("DarkAmber")
