@@ -30,7 +30,7 @@ else:
 # Create GUI object using PySimpleGui Class
 GUI.theme("DarkAmber")
 layout = [
-    [GUI.Listbox(key="GUIList", values=entriesList, size=(35,22))],
+    [GUI.Listbox(key="GUIList", values=entriesList, size=(0, 10), expand_x=True, )],
     [GUI.Text("Enter Payment Name"), GUI.InputText(key="entryName"), GUI.InputText(key="entryCost")],
     [GUI.Button("Ok", ), GUI.Button("Cancel")]
 ]
