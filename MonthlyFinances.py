@@ -44,11 +44,11 @@ def updateList(entryName, entryCost):
     entriesList.append(entryName + " " + entryCost + "\n")
     file = open("payments.txt", "a")
     file.write(entryName + " " + entryCost + "\n")
-    window["-TABLE-"].update(values=entriesList)  # Lookup on pysimplegui.org the "find_element" function for the Window object (was updated to use a list lookup method)
+    table.update(values=entriesList)  # Lookup on pysimplegui.org the "find_element" function for the Window object (was updated to use a list lookup method)
 
 def deleteEntry(index):
     del entriesList[index]
-    window["-TABLE-"].update(values=entriesList)
+    table.update(values=entriesList)
 
 
 # Event loop to process "events" and get the "values" of the inputs
