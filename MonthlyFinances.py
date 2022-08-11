@@ -3,11 +3,11 @@
 
 import os
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, Tk
 import PySimpleGUI as GUI
-import tkinter
 
 entriesList = []
+selectedIndex = NONE
 
 if os.path.exists('payments.txt'):
     file = open("payments.txt", "r")
@@ -26,29 +26,29 @@ else:
     file.close()
 
 # Create GUI object using PySimpleGui Class
-GUI.theme("DarkAmber")
+GUI.theme("SystemDefault") # See: "https://www.pysimplegui.org/en/latest/readme/#themes" for more themes
 layout = [
-    [GUI.Listbox(key="-LISTBOX-", values=entriesList, size=(20, 10))],
+    [GUI.Table(key="-TABLE-", headings=["Name", "Cost"], values=entriesList, enable_events=True)],
+    [GUI.Text()],
     [GUI.Text("Name"), GUI.InputText(key="entryName", size=15)],
     [GUI.Text("Cost"), GUI.InputText(key="entryCost", size=16)],
-    [GUI.Button("Ok"), GUI.Button("Cancel"), GUI.Button("Delete Element")]
+    [GUI.Button("Add"), GUI.Button("Cancel"), GUI.Button("Delete Element")]
 ]
 
 # Create the window
 window = GUI.Window("Window Title", layout, finalize=True)
-listbox = window["-LISTBOX-"]
-widget = listbox.widget
-
-listbox.bind("<Button-1>", "", propagate=False)
-window.refresh()
-x0, y0, dx, dy = widget.bbox(GUI.tk.END)
-y_limit = y0 + dy
+table = window["-TABLE-"]
 
 def updateList(entryName, entryCost):
+    entryCost = str(entryCost)
     entriesList.append(entryName + " " + entryCost + "\n")
     file = open("payments.txt", "a")
     file.write(entryName + " " + entryCost + "\n")
-    window["-LISTBOX-"].update(values=entriesList)  # Lookup on pysimplegui.org the "find_element" function for the Window object (was updated to use a list lookup method)
+    window["-TABLE-"].update(values=entriesList)  # Lookup on pysimplegui.org the "find_element" function for the Window object (was updated to use a list lookup method)
+
+def deleteEntry(index):
+    del entriesList[index]
+    window["-TABLE-"].update(values=entriesList)
 
 
 # Event loop to process "events" and get the "values" of the inputs
@@ -57,33 +57,37 @@ while True:
     if event in(GUI.WIN_CLOSED, "Cancel"): # if user closes the window or clicks cancel
         break
 
-    elif event == "Ok":
+    elif event == "Add":
         nameText = values["entryName"]
-        costText = values["entryCost"]
+        try:
+            costText = int(values["entryCost"])
+        except:
+            messagebox.showerror("Python Error", "Cost must be an integer!")
+            continue
+        print(isinstance(costText, int))
+
         if nameText == "":
-            messagebox.showerror("Python Error", "Null Name!")
+            messagebox.showerror("Python Error", "Entry must have a name!")
+            continue
         elif costText == "":
-            messagebox.showerror("Python Error!", "Null Cost!")
+            messagebox.showerror("Python Error!", "Entry must have a cost!")
+            continue
         else:
             updateList(nameText, costText)
 
-    elif event == "-LISTBOX-":
-        y = listbox.user_bind_event.y
-        if y  < y_limit:
-            index = widget.nearest(y)
-            listbox.update(set_to_index=index)
-        selectedElementIndex = window["-LISTBOX-"].get_indexes() # Get listbox element index as a list
-        print(selectedElementIndex)
-        # try:
-            # selectedElementIndex = selectedElementIndex[0] # Get the first index of list (The selected element index)
-        # except IndexError:
-            # continue
-        # del entriesList[selectedElementIndex]
-        # window["-LISTBOX-"].update(values=entriesList)
+    elif event == "-TABLE-":
+        try:
+            selectedIndex = values["-TABLE-"][0]
+            print(selectedIndex)
+        except IndexError:
+            print("No such index in values['-Values-']")
+        # dataSelected = [entriesList[row] for row in values[event]]
+        # print(dataSelected)
 
-    # elif event == "Delete Element":
-
-
-
+    elif event == "Delete Element":
+        if isinstance(selectedIndex, int):
+            del entriesList[selectedIndex]
+            table.update(values=entriesList)
+            selectedIndex = NONE
 
 window.close()
